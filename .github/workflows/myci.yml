@@ -81,7 +81,11 @@ jobs:
       run: sleep 10
     - name: Extract ngrok URL
       id: ngrok
-      run: echo "::set-output name=url::$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)"; echo "$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)" > ngrok_url.txt
+      run: |
+        ngrok_url=$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)
+        echo "NGROK_URL=$ngrok_url" >> $GITHUB_ENV
+        echo $ngrok_url > ngrok_url.txt
+
     - name: Display ngrok URL
       run: cat ngrok_url.txt
 
