@@ -87,7 +87,10 @@ jobs:
         echo $ngrok_url > ngrok_url.txt
 
     - name: Display ngrok URL
-      run: cat ngrok_url.txt
+      run: cat ngrok_output
+    # - name: Run ngrok locally
+    #   run: |
+    #     bin/ngrokd -tlsKey=device.key -tlsCrt=device.crt -domain=localhost -httpAddr=":8000" -httpsAddr=":8001"
 
     # You can add more steps here as needed
     # - name: Display application URL
