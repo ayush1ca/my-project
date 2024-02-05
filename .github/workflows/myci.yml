@@ -65,32 +65,13 @@ jobs:
     - name: Build application
       run: npm run build --if-present
     
-    - name: Build and push Docker image
-      uses: cloudposse/github-action-docker-build-push@master
-      with:
-        build_args: |
-          --build-arg SOME_ARG=some_value
-        tags: |
-          latest
-          1.0
-          ${{ github.sha }}
-        registry: docker.io
-        login: "${{ secrets.DOCKERHUB_USERNAME }}"
-        password: "${{ secrets.DOCKERHUB_PASSWORD }}"
-
-    - name: Start Docker container
-      run: |
-        docker run -d -p 4000:80 \
-          --name calculator_apps_container \
-          calculator_apps:1.0
-
-    - name: Wait for Docker container to start
-      run: sleep 10
-
-    # Add additional steps or commands as needed
-
-    - name: Display Docker container logs (for debugging)
-      run: docker logs calculator_apps_container
+   
+    - name: Check out code
+      uses: actions/checkout@v3
+    - name: Build docker images
+      run: docker build -t local < .devcontainer/Dockerfile
+    - name: Run tests
+      run: docker run -it -v $PWD:/srv -w/srv local make test
 
     # You can add more steps here as needed
     # - name: Display application URL
