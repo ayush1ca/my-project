@@ -49,7 +49,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [20.x]
 
     steps:
     - uses: actions/checkout@v3
@@ -70,10 +70,21 @@ jobs:
       uses: actions/checkout@v3
     - name: Build docker images
       run: docker build -t local .
-    - name: Run tests 
-      run: docker run -d -p 4000:80 --name my_container local
-    - name: Get URL
-      run: echo "[Workflow URL](${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }})"
+    - name: Start ngrok and expose port 4000
+      run: |
+        wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+        unzip ngrok-stable-linux-amd64.zip
+        chmod +x ngrok
+        ./ngrok http 4000 > ngrok_output &
+      env:
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+    - name: Wait for ngrok to start
+      run: sleep 10
+    - name: Extract ngrok URL
+      id: ngrok
+      run: echo "::set-output name=url::$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)"; echo "$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)" > ngrok_url.txt
+    - name: Display ngrok URL
+      run: cat ngrok_url.txt
 
     # You can add more steps here as needed
     # - name: Display application URL
