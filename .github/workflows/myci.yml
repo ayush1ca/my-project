@@ -65,12 +65,18 @@ jobs:
     - name: Build application
       run: npm run build --if-present
     
-    - name: Build
+    - name: Build and push Docker image
       uses: cloudposse/github-action-docker-build-push@main
       with:
+        build_args: |
+          --build-arg SOME_ARG=some_value
+        tags: |
+          latest
+          1.0
+          ${{ github.sha }}
         registry: docker.io
         login: "${{ secrets.DOCKERHUB_USERNAME }}"
-        password: "${{ secrets.DOCKERHUB_PASSWORD }}" 
+        password: "${{ secrets.DOCKERHUB_PASSWORD }}"
 
     - name: Build Docker image
       run: docker build -t calculator_apps:1.0 .
