@@ -65,7 +65,9 @@ jobs:
         wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
         unzip ngrok-stable-linux-amd64.zip
         chmod +x ngrok
-        ./ngrok authtoken $NGROK_AUTH_TOKEN
+        
+      run: echo "y" | ./ngrok authtoken $NGROK_AUTH_TOKEN
+
 
     - name: Start ngrok and expose port 3000
       run: ./ngrok http 3000 > ngrok_output &
