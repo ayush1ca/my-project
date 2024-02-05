@@ -64,12 +64,19 @@ jobs:
 
     - name: Build application
       run: npm run build --if-present
+    
+    - name: Build
+      uses: cloudposse/github-action-docker-build-push@main
+      with:
+        registry: registry.hub.docker.com
+        login: "${{ secrets.DOCKERHUB_USERNAME }}"
+        password: "${{ secrets.DOCKERHUB_PASSWORD }}" 
 
     - name: Build Docker image
       run: docker build -t calculator_apps .
 
     - name: Start Docker container
-      run: docker run -d -p 4000:80 your-docker-image-name
+      run: docker run -d -p 4000:80 calculator_apps
 
     - name: Wait for Docker container to start
       run: sleep 10
