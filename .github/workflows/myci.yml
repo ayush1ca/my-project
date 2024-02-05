@@ -78,14 +78,20 @@ jobs:
         login: "${{ secrets.DOCKERHUB_USERNAME }}"
         password: "${{ secrets.DOCKERHUB_PASSWORD }}"
 
-    - name: Build Docker image
-      run: docker build -t calculator_apps:1.0 .
-
     - name: Start Docker container
-      run: docker run -d -p 4000:80 calculator_apps:1.0
+      run: |
+        docker run -d -p 4000:80 \
+          --name calculator_apps_container \
+          calculator_apps:1.0
 
     - name: Wait for Docker container to start
       run: sleep 10
 
+    # Add additional steps or commands as needed
+
+    - name: Display Docker container logs (for debugging)
+      run: docker logs calculator_apps_container
+
+    # You can add more steps here as needed
     # - name: Display application URL
     #   run: echo "Application URL: http://localhost:3000"
