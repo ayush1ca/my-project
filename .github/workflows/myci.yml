@@ -77,8 +77,8 @@ jobs:
       id: ngrok
       run: echo "::set-output name=url::$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)"
 
-    - name: Display ngrok URL
-      run: echo "Ngrok URL: ${{ steps.ngrok.outputs.url }}"
+    # - name: Display ngrok URL
+    #   run: echo "Ngrok URL: ${{ steps.ngrok.outputs.url }}"
 
     - name: Start your application
       run: npm start
