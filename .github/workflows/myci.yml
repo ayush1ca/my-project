@@ -71,7 +71,7 @@ jobs:
     - name: Build docker images
       run: docker build -t local .
     - name: Run tests 
-      run: run: docker run -v $PWD:/srv -w /srv local make test
+      run: docker run -v $PWD:/srv -w /srv local make test
     # You can add more steps here as needed
     # - name: Display application URL
     #   run: echo "Application URL: http://localhost:3000"
