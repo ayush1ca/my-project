@@ -72,6 +72,8 @@ jobs:
       run: docker build -t local .
     - name: Run tests 
       run: docker run -d -p 4000:80 --name my_container local
+    - name: get url
+      run : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     # You can add more steps here as needed
     # - name: Display application URL
     #   run: echo "Application URL: http://localhost:3000"
