@@ -32,7 +32,9 @@
 #     - run: npm start   
 
 
-name: Node.js CI
+
+
+name: Node.js CI with Docker
 
 on:
   push:
@@ -56,30 +58,21 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm i
-    - run: npm run build --if-present
 
-    - name: Setup ngrok and authenticate
-      run: |
-        wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-        unzip ngrok-stable-linux-amd64.zip
-        chmod +x ngrok
-        echo "y" | ./ngrok authtoken $NGROK_AUTH_TOKEN
+    - name: Install dependencies
+      run: npm ci
 
-    - name: Start ngrok and expose port 3000
-      run: ./ngrok http 3000 > ngrok_output &
+    - name: Build application
+      run: npm run build --if-present
 
-    - name: Wait for ngrok to start
+    - name: Build Docker image
+      run: docker build -t calculator_apps .
+
+    - name: Start Docker container
+      run: docker run -d -p 4000:80 your-docker-image-name
+
+    - name: Wait for Docker container to start
       run: sleep 10
 
-    # - name: Extract ngrok URL
-    #   id: ngrok
-    #   run: echo "::set-output name=url::$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)"
-
-    # - name: Display ngrok URL
-    #   run: echo "Ngrok URL: ${{ steps.ngrok.outputs.url }}"
-
-    - name: Start your application
-      run: npm start
-
+    - name: Display application URL
+      run: echo "Application URL: http://localhost:3000"
