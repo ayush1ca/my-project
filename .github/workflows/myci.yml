@@ -73,10 +73,10 @@ jobs:
         password: "${{ secrets.DOCKERHUB_PASSWORD }}" 
 
     - name: Build Docker image
-      run: docker build -t calculator_apps .
+      run: docker build -t calculator_apps:1.0 .
 
     - name: Start Docker container
-      run: docker run -d -p 4000:80 calculator_apps
+      run: docker run -d -p 4000:80 calculator_apps:1.0
 
     - name: Wait for Docker container to start
       run: sleep 10
