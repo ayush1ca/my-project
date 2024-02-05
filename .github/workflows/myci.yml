@@ -74,5 +74,5 @@ jobs:
     - name: Wait for Docker container to start
       run: sleep 10
 
-    - name: Display application URL
-      run: echo "Application URL: http://localhost:3000"
+    # - name: Display application URL
+    #   run: echo "Application URL: http://localhost:3000"
