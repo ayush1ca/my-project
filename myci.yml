@@ -69,26 +69,26 @@ jobs:
       uses: actions/checkout@v3
     - name: Build docker images
       run: docker build -t local .
-    - name: Start ngrok and expose port 4000
-      run: |
-        wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-        unzip ngrok-stable-linux-amd64.zip
-        chmod +x ngrok
-        ./ngrok authtoken "$NGROK_AUTH_TOKEN"
-        ./ngrok http 4000 > ngrok_output &
-      env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-    - name: Wait for ngrok to start
-      run: sleep 10
-    - name: Extract ngrok URL
-      id: ngrok
-      run: |
-        ngrok_url=$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)
-        echo "NGROK_URL=$ngrok_url" >> $GITHUB_ENV
-        echo $ngrok_url > ngrok_url.txt
+    # - name: Start ngrok and expose port 4000
+    #   run: |
+    #     wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+    #     unzip ngrok-stable-linux-amd64.zip
+    #     chmod +x ngrok
+    #     ./ngrok authtoken "$NGROK_AUTH_TOKEN"
+    #     ./ngrok http 4000 > ngrok_output &
+    #   env:
+    #     NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+    # - name: Wait for ngrok to start
+    #   run: sleep 10
+    # - name: Extract ngrok URL
+    #   id: ngrok
+    #   run: |
+    #     ngrok_url=$(awk -F " " '/^Forwarding/ {print $2}' ngrok_output)
+    #     echo "NGROK_URL=$ngrok_url" >> $GITHUB_ENV
+    #     echo $ngrok_url > ngrok_url.txt
 
-    - name: Display ngrok URL
-      run: cat ngrok_output
+    # - name: Display ngrok URL
+    #   run: cat ngrok_output
     # - name: Run ngrok locally
     #   run: |
     #     bin/ngrokd -tlsKey=device.key -tlsCrt=device.crt -domain=localhost -httpAddr=":8000" -httpsAddr=":8001"
@@ -96,3 +96,10 @@ jobs:
     # You can add more steps here as needed
     # - name: Display application URL
     #   run: echo "Application URL: http://localhost:3000"
+
+    - name: Deploy with gh-pages
+      run: |
+      git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+      npx gh-pages -d build -u "github-actions-bot <support+actions@github.com>"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
